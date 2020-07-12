@@ -1,0 +1,176 @@
+CS 161 HW 6
+Name: Sum Yi Li 
+UID: 505146702
+
+Problem 1
+—————————————————————————————————————————————————————————————————————————————————————————
+1(a). {x/A, y/A, z/B}
+
+1(b). Q(y, G(A, B), Q(G(x, x), y))
+      No unifier exists because x cannot be A and B at the same time 
+
+1(c). {x/B, y/A}
+
+1(d). {x/John, y/John}
+
+1(e). Knows(Father(y), y), Knows(x, x)
+      No unifier because x cannot be y and Father(y) at the same time 
+
+—————————————————————————————————————————————————————————————————————————————————————————
+Problem 2
+
+2(a). Translate the sentences into formulas in first-order logic.
+
+1). John likes all kinds of food
+ 
+    Ax (Food(x) -> Likes(John, x))
+
+2). Apples are food
+
+    Food(Apples)
+
+3). Chicken is food 
+
+    Food(Chicken)
+
+4). Anything someone eats and isn’t killed by is food ; x refers to anything; y refers to someone
+   
+    Ax Ey (Eats(y,x) & ~Kill(x,y) -> Food(x))
+
+5). If you are killed by something, you are not alive; x refers to something; y refers to all people
+   
+    Ex Ay (Kill(x,y) -> ~Alive(y))
+
+6). Bill eats peanuts and is still alive.
+
+    Eats(Bill, Peanuts) & Alive(Bill)
+
+7). Sue eats everything Bill eats.
+
+    Ax (Eats(Bill, x) -> Eats(Sue, x))
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+2(b). Convert the formula of part (a) into CNF (the causal form)
+      Assume both Apples and Chicken are valid Apple objects and Chicken objects
+
+1). ~Food(x) | Likes(John, x)
+
+2). Food(Apples)
+
+3). Food(Chicken)
+
+4). ~Eats(G(x),x) | Kill(x,G(x)) | Food(x)
+
+5). ~Kill(G(y),y) | ~Alive(y)
+
+6). Eats(Bill, Peanuts) (originate from: Eats(Bill, Peanuts) | Alive(Bill))           
+
+7). Alive(Bill)         (originate from: Eats(Bill, Peanuts) | Alive(Bill))  
+
+8). ~Eats(Bill, x) | Eats(Sue, x)
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+2(c). Prove that John likes peanuts using resolution.
+
+9). ~Likes(John, Peanuts)
+
+10). Kill(Peanuts, Bill) | Food(Peanuts)      [Resolve 4, 6, with {G(x)/Bill, x/Peanuts}]
+
+11). ~Kill(G(Bill), Bill)		      [Resolve 5, 7, with {y/Bill}]
+
+12). Food(Peanuts)			      [Resolve 10, 11]
+
+13). Likes(John, Peanuts)	              [Resolve 1, 12 with {x/Peanuts}]
+
+14). empty clause, contradiction 	      [Resolve 9, 13]
+
+As a result, delta | ~alpha is unsatisfiable which means John likes Peanuts based on resolution.
+
+—————————————————————————————————————————————————————————————————————————————————————————
+2(d). Use resolution to answer what does Sue eat?
+
+15). Eats(Sue, Peanuts)                       [Resolve 6, 8 with {x/Peanuts}]
+
+As a result, Sue eats peanuts.
+
+—————————————————————————————————————————————————————————————————————————————————————————
+2(e). Use resolution to answer (d) if, instead of the axiom marked with an asterisk 
+
+Given: 1). If you don’t eat, you die.
+       2). If you die, you are not alive.
+       3). Bill is alive.
+
+Convert to First Order Logic 
+
+1). Ay Ex (~Eats(y, x) -> Die(y))
+
+2). Ay (Die(y) -> ~Alive(y))
+
+3). Alive(Bill)
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+Convert to CNF 
+
+16). Eats(y,x) | Die(y)
+
+17). ~Die(y) | ~Alive(y)
+
+18). Alive(Bill)
+
+—————————————————————————————————————————————————————————————————————————————————————————
+
+Prove by resolution:
+
+19). ~Die(Bill)			[resolve 17, 18, with {y/Bill}]
+
+20). Eats(Bill, x)		[resolve 16, 19 with {y/Bill}]
+
+21). Eats(Sue, x)		[resolve 8, 20]
+
+
+Given the above information, we cannot determine answer of the question “What does Sue eats?”
+Therefore, we are not able to use resolution to find out the food Sue eats based on the 
+provided axiom from the problem due to the fact there is no valid unifier to lead to the 
+answer. 
+
+—————————————————————————————————————————————————————————————————————————————————————————
+Problem 3 RSat Solver 
+
+Part 1 (graph1.txt)
+
+(1). Is the instance satisfiable with 3 colors?
+With 3 colors, graph1.txt instance is not satisfiable under the limit of 3 colors into
+a rSAT solver.
+
+(2). Is the instance satisfiable with 4 colors?
+With 4 colors, graph1.txt instance is satisfiable under the limit of 4 colors into
+a rSAT solver.
+
+(3). What do the answers of these two SAT instances tell you about the graph coloring problem of the above graph? Can you give a solution (a coloring) to the graph coloring problem of the above graph based on the results of RSat?
+
+Based on the two SAT instances, graph1.txt instance is not colorable and not satisfiable 
+with just 3 colors. We need 4 or more colors in order to make graph1.txt colorable 
+and satisfiable. The minimum number required to color graph1.txt is the same number
+as the maximum number of edges from vertex of the graph. 
+
+A solution to the graph coloring problem of the graph based on the results of RSat
+with 4 colors: Red, Blue, Green, Yellow
+
+Node 1 = Red
+Node 2 = Yellow
+Node 3 = Red
+Node 4 = Yellow
+Node 5 = Green
+Node 6 = Blue
+Node 7 = Green
+
+—————————————————————————————————————————————————————————————————————————————————————————
+Part 2 (graph2.txt)
+
+(4). What is the minimum number of colors required to properly color this graph?
+
+The minimum number of colors required to properly color graph2.txt is 8 or more. 
+
